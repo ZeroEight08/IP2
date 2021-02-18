@@ -8,7 +8,7 @@ public class Player1Code : MonoBehaviour
     public Rigidbody2D rb;
     public Vector2 playerSpeed;
     SpriteRenderer sr;
-    public Sprite sp;
+    public Sprite[] sp;
     Vector3 hookSpawnPos;
     public Quaternion q;
     bool objectInRange;
@@ -19,6 +19,7 @@ public class Player1Code : MonoBehaviour
     GameObject rope;
     Transform[] bottomOfRope;
     bool onGround;
+    public Animator anim;
 
     // Start is called before the first frame update
     void Start()
@@ -26,6 +27,8 @@ public class Player1Code : MonoBehaviour
         q = new Quaternion(0, 0, 0, 0);
         rb = GetComponent<Rigidbody2D>();
         objectInRange = false;
+        sp = Resources.LoadAll<Sprite>("");
+        rb.drag = 5;
     }
 
     // Update is called once per frame
@@ -36,14 +39,30 @@ public class Player1Code : MonoBehaviour
             playerSpeed.x = 0.25f;
             playerSpeed.y = 0;
             rb.velocity += playerSpeed;
-            this.gameObject.transform.GetChild(0).localPosition = new Vector3(1, 0, 0);
+            this.gameObject.transform.GetChild(0).localPosition = new Vector3(3, 0, 0);
+        }
+        if (Input.GetKeyDown("d"))
+        {
+            anim.SetTrigger("startWalkingRight");
+        }
+        if (Input.GetKeyUp("d"))
+        {
+            anim.SetTrigger("stopWalkingRight");
+        }
+        if (Input.GetKeyDown("a"))
+        {
+            anim.SetTrigger("startWalkingLeft");
+        }
+        if (Input.GetKeyUp("a"))
+        {
+            anim.SetTrigger("stopWalkingLeft");
         }
         if (Input.GetKey("a") && !onRope && rb.velocity.x > -8)
         {
             playerSpeed.x = -0.25f;
             playerSpeed.y = 0;
             rb.velocity += playerSpeed;
-            this.gameObject.transform.GetChild(0).localPosition = new Vector3(-1, 0, 0);
+            this.gameObject.transform.GetChild(0).localPosition = new Vector3(-3, 0, 0);
         }
         if (onGround)
         {
@@ -56,7 +75,7 @@ public class Player1Code : MonoBehaviour
         if (Input.GetKeyDown("w"))
         {
             playerSpeed.x = rb.velocity.x;
-            playerSpeed.y = 5;
+            playerSpeed.y = 7.5f;
             rb.velocity = playerSpeed;
         }
 
@@ -69,7 +88,7 @@ public class Player1Code : MonoBehaviour
             hook.AddComponent<BoxCollider2D>().size = new Vector2(1, 1);
             hook.GetComponent<BoxCollider2D>().isTrigger = true;
             sr = hook.GetComponent<SpriteRenderer>();
-            sr.sprite = sp;
+            sr.sprite = sp[0];
             hook.transform.position = transform.position;
             hook.transform.localScale = new Vector3(0.5f, 0.5f, 1f);
             hook.GetComponent<Rigidbody2D>().gravityScale = 0;
@@ -108,10 +127,6 @@ public class Player1Code : MonoBehaviour
         if (onRope)
         {
             this.gameObject.transform.position = bottomOfRope[1].position;
-            if (Input.GetKeyDown("e"))
-            {
-                this.gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(50, 0);
-            }
         }
 
         if (Input.GetKeyDown(KeyCode.Space) && onRope)
@@ -180,6 +195,12 @@ public class Player1Code : MonoBehaviour
                 onGround = false;
                 break;
         }
+        switch (collision.gameObject.layer)
+        {
+            case 8:
+                onGround = false;
+                break;
+        }
     }
 
 
@@ -199,6 +220,13 @@ public class Player1Code : MonoBehaviour
                 break;
 
             case "Square":
+                onGround = true;
+                break;
+        }
+
+        switch (collision.gameObject.layer)
+        {
+            case 8:
                 onGround = true;
                 break;
         }
