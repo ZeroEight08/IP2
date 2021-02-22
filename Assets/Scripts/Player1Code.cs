@@ -20,6 +20,7 @@ public class Player1Code : MonoBehaviour
     Transform[] bottomOfRope;
     bool onGround;
     public Animator anim;
+    public float volume;
 
     // Start is called before the first frame update
     void Start()
@@ -43,6 +44,7 @@ public class Player1Code : MonoBehaviour
         }
         if (Input.GetKeyDown("d"))
         {
+            transform.localScale = new Vector2(0.4194764f, transform.localScale.y);
             anim.SetTrigger("startWalkingRight");
         }
         if (Input.GetKeyUp("d"))
@@ -51,10 +53,12 @@ public class Player1Code : MonoBehaviour
         }
         if (Input.GetKeyDown("a"))
         {
+            transform.localScale = new Vector2(0.4194764f, transform.localScale.y);
             anim.SetTrigger("startWalkingLeft");
         }
         if (Input.GetKeyUp("a"))
         {
+            transform.localScale = new Vector2(-0.4194764f, transform.localScale.y);
             anim.SetTrigger("stopWalkingLeft");
         }
         if (Input.GetKey("a") && !onRope && rb.velocity.x > -8)
@@ -70,12 +74,12 @@ public class Player1Code : MonoBehaviour
         }
         if (!onGround)
         {
-            rb.drag = 0;
+            rb.drag = 3;
         }
         if (Input.GetKeyDown("w"))
         {
             playerSpeed.x = rb.velocity.x;
-            playerSpeed.y = 7.5f;
+            playerSpeed.y = 20;
             rb.velocity = playerSpeed;
         }
 
