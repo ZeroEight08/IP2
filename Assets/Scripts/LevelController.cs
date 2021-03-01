@@ -6,26 +6,18 @@ using UnityEngine.UI;
 
 public class LevelController : MonoBehaviour
 {
-    Player1Code pc;
-    Slider slider;
-
+    public int platesPushed;
 
     void Start()
     {
-        slider = Slider.FindObjectOfType<Slider>();
+        platesPushed = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("r"))
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
+
     }
 
-    public void volumeChange()
-    {
-        pc.volume = slider.value;
-    }
+
 }

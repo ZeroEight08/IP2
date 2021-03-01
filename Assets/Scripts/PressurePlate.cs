@@ -6,6 +6,7 @@ public class PressurePlate : MonoBehaviour
 {
     public GameObject door;
     Vector2 doorPos;
+    public LevelController lc;
 
     // Start is called before the first frame update
     void Start()
@@ -24,7 +25,11 @@ public class PressurePlate : MonoBehaviour
         switch (collision.gameObject.name)
         {
             case "Player":
-                door.transform.position = new Vector2(1000, 1000);
+                lc.platesPushed++;
+                if(lc.platesPushed > 0)
+                {
+                    door.transform.position = new Vector2(1000, 1000);
+                }
                 break;
         }    
     }
@@ -33,7 +38,11 @@ public class PressurePlate : MonoBehaviour
         switch (collision.gameObject.name)
         {
             case "Player":
-                door.transform.position = doorPos;
+                lc.platesPushed--;
+                if(lc.platesPushed == 0)
+                {
+                    door.transform.position = doorPos;
+                }
                 break;
         }
     }

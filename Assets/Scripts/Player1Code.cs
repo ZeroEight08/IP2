@@ -20,11 +20,11 @@ public class Player1Code : MonoBehaviour
     Transform[] bottomOfRope;
     bool onGround;
     public Animator anim;
-    public float volume;
 
     // Start is called before the first frame update
     void Start()
     {
+        
         q = new Quaternion(0, 0, 0, 0);
         rb = GetComponent<Rigidbody2D>();
         objectInRange = false;
@@ -35,6 +35,7 @@ public class Player1Code : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         if (Input.GetKey("d") && !onRope && rb.velocity.x < 8)
         {
             playerSpeed.x = 0.25f;
@@ -44,7 +45,6 @@ public class Player1Code : MonoBehaviour
         }
         if (Input.GetKeyDown("d"))
         {
-            transform.localScale = new Vector2(0.4194764f, transform.localScale.y);
             anim.SetTrigger("startWalkingRight");
         }
         if (Input.GetKeyUp("d"))
@@ -53,12 +53,10 @@ public class Player1Code : MonoBehaviour
         }
         if (Input.GetKeyDown("a"))
         {
-            transform.localScale = new Vector2(0.4194764f, transform.localScale.y);
             anim.SetTrigger("startWalkingLeft");
         }
         if (Input.GetKeyUp("a"))
         {
-            transform.localScale = new Vector2(-0.4194764f, transform.localScale.y);
             anim.SetTrigger("stopWalkingLeft");
         }
         if (Input.GetKey("a") && !onRope && rb.velocity.x > -8)
@@ -71,16 +69,22 @@ public class Player1Code : MonoBehaviour
         if (onGround)
         {
             rb.drag = 5;
+            rb.sharedMaterial.friction = 0.4f;
         }
         if (!onGround)
         {
             rb.drag = 3;
+            rb.sharedMaterial.friction = 0;
         }
         if (Input.GetKeyDown("w"))
         {
             playerSpeed.x = rb.velocity.x;
             playerSpeed.y = 20;
             rb.velocity = playerSpeed;
+            if (anim.GetCurrentAnimatorStateInfo(0).IsName("IdleRight") || anim.GetCurrentAnimatorStateInfo(0).IsName("BearWalkRight"))
+            {
+                anim.SetTrigger("JumpRight");
+            }
         }
 
         if (Input.GetMouseButtonDown(0))
@@ -114,6 +118,7 @@ public class Player1Code : MonoBehaviour
                 objectToPickUp.transform.position = this.gameObject.transform.GetChild(0).position;
                 holdingAnObject = true;
                 pickingUp = true;
+                objectToPickUp.layer = 10;
             }
             if (holdingAnObject && pickingUp == false)
             {
@@ -122,6 +127,9 @@ public class Player1Code : MonoBehaviour
                 holdingAnObject = false;
                 objectToPickUp.GetComponent<Rigidbody2D>().gravityScale = 1;
                 objectToPickUp.GetComponent<Rigidbody2D>().velocity = (throwingDirection) * 10;
+                objectInRange = false;
+                objectToPickUp.layer = 9;
+                objectToPickUp = null;
             }
         }
         if (holdingAnObject)
@@ -155,6 +163,14 @@ public class Player1Code : MonoBehaviour
 
             case "Level Trigger":
                 SceneManager.LoadScene("Test Area 2");
+                break;
+        }
+
+        switch (collision.gameObject.layer)
+        {
+            case 9:
+                objectInRange = true;
+                objectToPickUp = collision.gameObject;
                 break;
         }
     }

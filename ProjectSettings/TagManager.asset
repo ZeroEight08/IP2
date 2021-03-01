@@ -14,8 +14,8 @@ TagManager:
   - Rope
   - Player
   - Ground
-  - 
-  - 
+  - PickUppable
+  - HeldObjects
   - 
   - 
   - 
